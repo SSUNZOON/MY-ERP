@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>회사 ERP v1</title>
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="erp-shell">
+  <aside class="erp-sidebar no-print">
+    <div class="erp-logo">🏢 회사 ERP</div>
+    <div class="erp-sub">Company Management System v1</div>
+    <nav class="erp-menu">
+      <button id="menu-dashboard" class="active" onclick="showModule('dashboard')">📊 대시보드</button>
+      <button id="menu-employees" onclick="showModule('employees')">👥 직원 관리</button>
+      <button id="menu-payroll" onclick="showModule('payroll')">👷 직원 급여 관리</button>
+      <button id="menu-schedules" onclick="showModule('schedules')">📅 일정 관리</button>
+      <button id="menu-sites" onclick="showModule('sites')">🏗 현장 관리</button>
+      <button id="menu-statements" onclick="showModule('statements')">📄 거래명세서</button>
+      <button id="menu-accounting" onclick="showModule('accounting')">💰 회계관리</button>
+      <button id="menu-settings" onclick="showModule('settings')">⚙ 설정</button>
+    </nav>
+  </aside>
+  <section class="erp-content">
+    <div id="dashboardModule" class="module active dashboard no-print">
+      <div class="dashboard-hero">
+        <div class="dashboard-title">회사 ERP 대시보드</div>
+        <div style="color:#64748b">필요한 메뉴를 하나씩 추가해가는 회사 관리 프로그램입니다.</div>
+        <div class="erp-grid">
+          <div class="erp-tile"><b>👷 직원 급여 관리</b><span>현재 완성된 급여명세서 관리 메뉴입니다.</span></div>
+          <div class="erp-tile"><b>📄 거래명세서</b><span>추후 거래명세서 작성/출력 기능을 추가할 수 있습니다.</span></div>
+          <div class="erp-tile"><b>💰 회계관리</b><span>매출, 경비, 인건비 집계를 추가할 수 있습니다.</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="payrollModule" class="module">
+      <div class="wrap">
+      <h1>직원 급여 관리</h1>
+<div class="layout">
+<main class="card"><div id="tableArea" class="empty-msg">우측에서 급여명세서를 만들고 직원 이름을 클릭하면 급여표가 생성됩니다.</div></main>
+<aside class="card">
+  <div class="side-title">급여명세서 관리</div>
+  <div class="row"><input id="newStatementInput" placeholder="예: 2026년 6월 급여명세서"/><button onclick="addStatement()">신규 생성</button></div>
+  <div id="statementList" class="list"></div>
+  <div class="side-title">백업 / 복원</div>
+  <div class="row"><button class="green" onclick="downloadBackup()">백업 다운로드</button><button class="secondary" onclick="document.getElementById('restoreInput').click()">백업 복원</button></div>
+  <input id="restoreInput" type="file" accept="application/json,.json" style="display:none" onchange="restoreBackup(this.files[0])">
+  <div class="mini">브라우저 데이터가 사라질 수 있으니, 정산 후에는 백업 파일을 꼭 저장해두는 걸 추천해.</div>
+  <div class="side-title">직원 이름 목록 / 기본 일당</div><div id="employeeList" class="list"></div>
+</aside>
+</div>
+</div>
+      </div>
+    <div id="employeesModule" class="module">
+      <div class="wrap">
+      <h1>직원 관리</h1>
+      <div class="layout-left">
+        <aside class="card">
+          <div class="side-title">직원 등록</div>
+          <div class="row"><input id="employeeInput2" placeholder="직원 이름 입력"/><button onclick="addEmployee()">추가</button></div>
+          <div class="side-title">직원 목록</div>
+          <div id="empList" class="list"></div>
+        </aside>
+        <main class="card">
+          <div id="empDetailsArea" class="empty-msg">좌측에서 직원을 선택해주세요.</div>
+        </main>
+      </div>
+      </div>
+    </div>
+    <div id="schedulesModule" class="module">
+      <div class="wrap">
+        <h1>일정 관리</h1>
+        <div id="scheduleAppArea"></div>
+      </div>
+    </div>
+    <div id="sitesModule" class="module">
+      <div class="wrap">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h1>현장 관리</h1>
+          <div style="display:flex; gap:8px;">
+            <input id="newSiteInputMain" placeholder="새 현장명 입력" style="width:200px;">
+            <button onclick="addSiteMain()" style="background:#14985a; color:white;">+ 현장 추가</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px;">
+          <table style="width:100%; border-collapse:collapse; background:white;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:12px; background:#f8f9fa; border-bottom:1px solid #dee2e6;">현장명</th>
+                <th style="width:100px; text-align:center; padding:12px; background:#f8f9fa; border-bottom:1px solid #dee2e6;">관리</th>
+              </tr>
+            </thead>
+            <tbody id="mainSiteListBody">
+              <!-- 현장 목록 렌더링 영역 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="statementsModule" class="module placeholder no-print"><div class="card"><h2>📄 거래명세서</h2><p>추후 만들 메뉴입니다.</p><ul><li>거래처 등록</li><li>품목, 수량, 단가 입력</li><li>PDF/엑셀 출력</li></ul></div></div>
+    <div id="accountingModule" class="module placeholder no-print"><div class="card"><h2>💰 회계관리</h2><p>추후 만들 메뉴입니다.</p><ul><li>매출 / 매입</li><li>경비 관리</li><li>월별 손익 요약</li></ul></div></div>
+    <div id="settingsModule" class="module placeholder no-print"><div class="card"><h2>⚙ 설정</h2><p>추후 만들 메뉴입니다.</p><ul><li>회사 정보</li><li>백업 / 복원</li><li>사용자 권한</li></ul></div></div>
+  </section>
+</div>
+<script src="app.js"></script>
+<script src="schedule.js"></script>
+</body>
+</html>
